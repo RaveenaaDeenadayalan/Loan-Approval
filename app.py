@@ -1,30 +1,26 @@
 import pandas as pd
 import streamlit as st
-from sklearn.preprocessing import LabelEncoder, StandardScaler # type: ignore
-from sklearn.tree import DecisionTreeClassifier # type: ignore
-from sklearn.feature_selection import SelectKBest, f_classif # type: ignore
-import joblib # type: ignore
+import joblib
 
 st.title("Loan Approval Prediction")
 
 # Load the trained Decision Tree model and feature selector
 dt_model = joblib.load('dt_model.pkl')
-selector = joblib.load('selector.pkl')  # Ensure the selector was saved during training
+selector = joblib.load('selector.pkl')
+scaler = joblib.load('scaler.pkl')  # Load the scaler saved during training
+encoders = joblib.load('encoders.pkl')  # Load label encoders saved during training
 
 # Function to preprocess new data and make predictions
-def preprocess_new_data(new_data, selector):
-    # Label encode categorical columns
-    cat_new_data = new_data.select_dtypes(include=['object'])
-    le = LabelEncoder()
-    for column in cat_new_data.columns:
-        new_data[column] = le.fit_transform(new_data[column])
+def preprocess_new_data(new_data, selector, scaler, encoders):
+    # Apply label encoding using pre-saved encoders
+    for column, encoder in encoders.items():
+        new_data[column] = encoder.transform(new_data[column])
 
-    # Standardize the numerical features
-    scaler = StandardScaler()
-    new_data_scaled = scaler.fit_transform(new_data)
+    # Standardize the numerical features using the pre-saved scaler
+    new_data_scaled = scaler.transform(new_data)
 
-    # Select top features based on the selector used in training
-    new_data_selected = selector.transform(new_data_scaled)  # Use the loaded selector
+    # Select top features using the pre-saved selector
+    new_data_selected = selector.transform(new_data_scaled)
     
     return new_data_selected
 
@@ -43,7 +39,6 @@ self_employed = st.selectbox("Self Employed", options=["Yes", "No"])
 
 # Create new data for prediction based on user input
 new_data = pd.DataFrame({
-    'loan_id': [1],  # Add the loan_id column here as well
     'income_annum': [income],
     'loan_amount': [loan_amount],
     'loan_term': [loan_term],
@@ -57,16 +52,21 @@ new_data = pd.DataFrame({
     'self_employed': [self_employed]
 })
 
+# Preprocess the new data
+try:
+    new_data_selected = preprocess_new_data(new_data, selector, scaler, encoders)
+except Exception as e:
+    st.error(f"Error in preprocessing: {e}")
 
-# Preprocess the new data (apply encoding, scaling, and feature selection)
-new_data_selected = preprocess_new_data(new_data, selector)
-
-# Predict loan status on the button click
+# Predict loan status on button click
 if st.button("Predict"):
-    # Make prediction
-    new_prediction = dt_model.predict(new_data_selected)
-    
-    if new_prediction[0] == 1:
-        st.success("Loan Approved")
-    else:
-        st.error("Loan Rejected")
+    try:
+        # Make prediction
+        new_prediction = dt_model.predict(new_data_selected)
+
+        if new_prediction[0] == 1:
+            st.success("Loan Approved")
+        else:
+            st.error("Loan Rejected")
+    except Exception as e:
+        st.error(f"Error during prediction: {e}")
