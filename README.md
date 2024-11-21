@@ -1,7 +1,7 @@
 # Loan Approval Prediction 🏦💰
 
 ## Overview
-Loan approval is a crucial process in the banking and finance industry. This application provides a simple interface for predicting loan approval based on input parameters such as income, loan amount, CIBIL score, and more. The backend is powered by machine learning models trained on historical data.
+This is one of the projects for my graduate class. Loan approval is a crucial process in the banking and finance industry. This application provides a simple interface for predicting loan approval based on input parameters such as income, loan amount, CIBIL score, and more. The backend is powered by machine learning models trained on historical data.
 
 ## Features
 - **Batch Prediction**: Predicts loan statuses for multiple applicants from a dataset.
