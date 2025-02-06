@@ -3,6 +3,10 @@
 ## Overview
 This is one of the projects for my graduate class. Loan approval is a crucial process in the banking and finance industry. This application provides a simple interface for predicting loan approval based on input parameters such as income, loan amount, CIBIL score, and more. The backend is powered by machine learning models trained on historical data.
 
+- ## Link
+- https://mis546-loan-approval-prediction.streamlit.app/
+- Input loan and borrower details via the interactive form.
+
 ## Features
 - **Batch Prediction**: Predicts loan statuses for multiple applicants from a dataset.
 - **Custom Prediction**: Allows users to input loan details through an interactive interface to get predictions instantly.
@@ -35,7 +39,3 @@ This is one of the projects for my graduate class. Loan approval is a crucial pr
   - `Asset values`: residential, commercial, luxury, bank assets
   - `education`: Education level of the borrower.
   - `self_employed`: Employment status.
-
-- ## Usage
-- Link - https://mis546-loan-approval-prediction.streamlit.app/
-- Input loan and borrower details via the interactive form.
